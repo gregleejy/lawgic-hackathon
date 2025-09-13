@@ -20,7 +20,9 @@ export default function Home() {
 
   // Helper to fetch output.json from backend
   async function fetchOutputJson() {
-    const res = await fetch("http://localhost:8000/static/output.json");
+    const res = await fetch(
+      `http://localhost:8000/static/output.json?timestamp=${Date.now()}`
+    );
     if (res.ok) {
       const text = await res.text();
       if (!text.trim()) return null; // Handle empty file

@@ -7,10 +7,5 @@ sentence-transformers==5.1.0
 numpy==2.3.3
 transformers==4.56.1
 torch==2.8.0
-scikit-learn==1.7.2
-scipy==1.16.2
-joblib==1.5.2
-huggingface-hub==0.34.4
-python-multipart==0.0.20
-starlette==0.47.3
+
 
