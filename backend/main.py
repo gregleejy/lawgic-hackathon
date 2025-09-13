@@ -60,14 +60,35 @@ CRITICAL INSTRUCTIONS:
 3. MAXIMUM 5 provisions, but output FEWER if there aren't enough relevant provisions
 4. Use definitions, Fifth Schedule, and subsidiary legislation as SUPPORTING CONTEXT in your reasoning
 
-STRICT KEY FORMAT RULES - ONLY THESE FORMATS ARE ACCEPTED:
-- "S [number] PDPA" (e.g., "S 21(1) PDPA", "S 21(1) and (2) PDPA", "Ss 21(5) and (7) PDPA")
-- "Reg [number] PDPR" (e.g., "Reg 4 PDPR", "Regs 4 and 5 PDPR") 
-- "para [reference] of [Schedule] PDPA" (e.g., "para 1(a) of Fifth Schedule PDPA")
+STRICT KEY FORMAT RULES - ONLY THESE 3 FORMATS ARE ACCEPTED:
+
+FORMAT 1: "S [number] [document name]" 
+EXAMPLES: "S 21(1) PDPA", "S 21(1) and (2) PDPA", "Ss 21(5) and (7) PDPA"
+
+FORMAT 2: "Reg [number] [document name]" 
+EXAMPLES: "Reg 4 PDPR", "Regs 4 and 5 PDPR"
+
+FORMAT 3: "para [reference] of [Schedule] [document name]" 
+EXAMPLES: "para 1(a) of Fifth Schedule PDPA"
+
+ABSOLUTELY PROHIBITED KEY FORMATS EXAMPLES:
+Do not accept "Section 21(1) PDPA" (must use "S" not "Section")
+Do not accept "Definition: personal data" (definitions are NOT keys)
+Do not accept "Fifth Schedule" (schedules are NOT keys unless using para format)
+Do not accept "Personal Data Protection Regulations" (not a key)
+Do not accept "S 21 of PDPA" (missing document name in key)
+Do not accept "21(1) PDPA" (missing "S")
+Do not accept "Regulation 4" (must use "Reg" and include document name)
+
+VALIDATION CHECKLIST - EVERY KEY MUST:
+Correct: Start with "S " OR "Reg " OR "para "
+Correct: End with document name (PDPA or PDPR)
+Correct: Follow exact format patterns shown above
+Correct: Never include "Section", "Definition:", or standalone "Schedule"
 
 OUTPUT FORMAT - RETURN EXACTLY THIS STRUCTURE:
 {{
-    "[Valid Key Format]": "[Legal reasoning explaining why this provision is relevant to the scenario. Reference how it applies to the specific facts. You may reference definitions and other provisions as supporting context within this reasoning.]"
+    "[VALID KEY FORMAT ONLY]": "[Legal reasoning explaining why this provision is relevant to the scenario. Reference how it applies to the specific facts. You may reference definitions and other provisions as supporting context within this reasoning.]"
 }}
 
 REASONING REQUIREMENTS:
@@ -77,18 +98,20 @@ REASONING REQUIREMENTS:
 - Use definitions, schedules, and subsidiary legislation as supporting context within reasoning
 - Be detailed and legally precise (3-4 sentences per provision)
 
-EXAMPLE OUTPUT FORMAT:
+EXAMPLE CORRECT OUTPUT:
 {{
     "S 21(1) and (2) PDPA": "The facts are about an individual requesting access to their data, so S 21 PDPA is relevant. S 21(1) PDPA states that unless excluded by another section, an organisation must upon an individual's request provide that individual with the personal data. S 21(2) PDPA points to the Fifth Schedule which may exclude certain data from disclosure requirements.",
-    "S 21(5) PDPA": "These provisions are relevant because they set out how the organisation must respond to the access request when some data can be provided and others cannot. S 21(5) PDPA covers situations where partial access is granted, and S 21(7) PDPA requires notification about information that was not provided.",
-    "Regs 4 and 5 PDPR": "This paragraph is directly relevant as it excludes opinion data kept solely for evaluative purposes from disclosure requirements, which would reasonably include performance appraisals requested in this scenario."
+    "Ss 21(5) and (7) PDPA": "These provisions are relevant because they set out how the organisation must respond to the access request when some data can be provided and others cannot. S 21(5) PDPA covers situations where partial access is granted, and S 21(7) PDPA requires notification about information that was not provided.",
+    "para 1(a) of Fifth Schedule PDPA": "This paragraph is directly relevant as it excludes opinion data kept solely for evaluative purposes from disclosure requirements, which would reasonably include performance appraisals requested in this scenario.",
+    "Reg 4 PDPR": "This regulation sets out the procedural requirements for responding to access requests, providing specific implementation details for compliance with S 21 PDPA obligations."
 }}
 
-IMPORTANT: 
+FINAL WARNING:
+- If a key does not match the 3 approved formats exactly, DO NOT include it
+- Only include provisions that exist in the provided context
 - Return ONLY the JSON structure, no additional text
-- Use the exact key formats shown above
-- Reference schedules and definitions within reasoning, not as keys
-- Maximum 5 provisions total"""
+- Maximum 5 provisions total
+- Each key MUST start with "S ", "Reg ", or "para " and end with document name"""
 
     return prompt
 
@@ -104,24 +127,42 @@ def analyze_legal_scenario(user_query: str, legal_context: str) -> str:
     except Exception as e:
         return f"Error generating legal analysis: {str(e)}"
 
-def save_to_output_json(data: dict, output_file: str = "output.json"):
-    """Save data to output.json file"""
+def save_to_output_json(analysis_json: str, output_file: str = "output.json"):
+    """Save only the clean JSON analysis to output.json file with hardcoded definition filtering"""
     try:
-        # Try to load existing data
-        if os.path.exists(output_file):
-            with open(output_file, 'r', encoding='utf-8') as f:
-                existing_data = json.load(f)
-        else:
-            existing_data = {"queries": []}
+        # Clean the analysis_json string to extract just the JSON content
+        analysis_clean = analysis_json.strip()
         
-        # Append new data
-        existing_data["queries"].append(data)
+        # Remove markdown code block formatting if present
+        if analysis_clean.startswith('```json'):
+            analysis_clean = analysis_clean.replace('```json', '', 1)
+        if analysis_clean.startswith('```'):
+            analysis_clean = analysis_clean.replace('```', '', 1)
+        if analysis_clean.endswith('```'):
+            analysis_clean = analysis_clean.rsplit('```', 1)[0]
         
-        # Save updated data
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(existing_data, f, indent=2, ensure_ascii=False)
+        analysis_clean = analysis_clean.strip()
         
-        print(f"✓ Results saved to {output_file}")
+        # Try to parse as JSON to validate it's valid JSON
+        try:
+            parsed_json = json.loads(analysis_clean)
+            
+            # HARDCODED FILTER: Remove any keys containing "Definition"
+            keys_to_remove = [key for key in parsed_json.keys() if "Definition" in key]
+            for key in keys_to_remove:
+                parsed_json.pop(key)
+                print(f"🚫 Removed definition key: {key}")
+            
+            # Save the filtered JSON
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(parsed_json, f, indent=2, ensure_ascii=False)
+                
+        except json.JSONDecodeError:
+            # If it's not valid JSON, save as plain text
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(analysis_clean)
+        
+        print(f"✓ Analysis saved to {output_file}")
         
     except Exception as e:
         print(f"❌ Error saving to {output_file}: {str(e)}")
@@ -151,15 +192,12 @@ def process_query(user_query: str, save_output: bool = True) -> dict:
         
         if "No relevant categories found" in legal_context:
             result = {
-                "timestamp": datetime.now().isoformat(),
                 "query": user_query,
-                "key_terms": key_terms,
-                "legal_context": legal_context,
                 "analysis": "No relevant PDPA provisions found for this query.",
                 "status": "no_matches"
             }
             if save_output:
-                save_to_output_json(result)
+                save_to_output_json("No relevant PDPA provisions found for this query.")
             return result
             
         print("✓ Legal context compiled successfully")
@@ -179,29 +217,25 @@ def process_query(user_query: str, save_output: bool = True) -> dict:
         
         # Prepare result data
         result = {
-            "timestamp": datetime.now().isoformat(),
             "query": user_query,
-            "key_terms": key_terms,
-            "legal_context": legal_context,
             "analysis": legal_analysis,
             "status": "success"
         }
         
-        # Save to output.json
+        # Save only the analysis JSON to output.json
         if save_output:
-            save_to_output_json(result)
+            save_to_output_json(legal_analysis)
         
         return result
         
     except Exception as e:
         error_result = {
-            "timestamp": datetime.now().isoformat(),
             "query": user_query,
             "error": str(e),
             "status": "error"
         }
         if save_output:
-            save_to_output_json(error_result)
+            save_to_output_json(f'{{"error": "{str(e)}"}}')
         raise e
 
 def main():
@@ -298,11 +332,11 @@ def test_with_sample_query():
 
 if __name__ == "__main__":
     # Run the test with sample query first
-    test_with_sample_query()
+    # test_with_sample_query()
     
-    print("\n" + "="*80)
-    print("TEST COMPLETED - Starting interactive system...")
-    print("="*80)
+    # print("\n" + "="*80)
+    # print("TEST COMPLETED - Starting interactive system...")
+    # print("="*80)
     
     # Run the main interactive system
     main()
