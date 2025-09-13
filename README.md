@@ -49,7 +49,7 @@ my-env\Scripts\activate      # On Windows (Command Prompt)
 source my-env/bin/activate   # On macOS/Linux
 
 pip install -r requirements.txt
-uvicorn main:app --reload
+uvicorn main:app --host localhost --port 8000 --reload
 ```
 
 - Backend API available at [http://localhost:8000](http://localhost:8000)
