@@ -16,13 +16,61 @@ export default function Home() {
   const [inputText, setInputText] = useState("");
   const [result, setResult] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputText.trim()) {
-      setResult(`You entered: "${inputText}"`);
-      setIsSubmitted(true);
+  // Helper to fetch output.json from backend
+  async function fetchOutputJson() {
+    const res = await fetch("http://localhost:8000/static/output.json");
+    if (res.ok) {
+      const text = await res.text();
+      if (!text.trim()) return null; // Handle empty file
+      try {
+        const data = JSON.parse(text);
+        return data;
+      } catch {
+        return null; // Handle invalid JSON
+      }
     }
+    return null;
+  }
+
+  // Submit query to backend and poll for output.json changes
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputText.trim()) return;
+    setLoading(true);
+    setIsSubmitted(true);
+    setResult("");
+
+    // Get the current output.json before submitting
+    const initialOutput = await fetchOutputJson();
+
+    // Send query to backend
+    await fetch("http://localhost:8000/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: inputText }),
+    });
+
+    // Poll output.json until it changes from initialOutput
+    let tries = 0;
+    while (tries < 20) {
+      // Poll for up to 20 seconds
+      const newOutput = await fetchOutputJson();
+      // Compare stringified for polling, but setResult with object
+      if (
+        newOutput &&
+        JSON.stringify(newOutput) !== JSON.stringify(initialOutput)
+      ) {
+        setResult(newOutput);
+        setLoading(false);
+        break;
+      }
+      await new Promise((r) => setTimeout(r, 1000));
+      // Poll every 1 second
+      tries += 1;
+    }
+    setLoading(false);
   };
 
   return (
@@ -169,21 +217,27 @@ export default function Home() {
               </div>
               <CardDescription className="text-blue-700">
                 {isSubmitted
-                  ? "Your query has been processed"
+                  ? loading
+                    ? "Processing your query..."
+                    : "Your query has been processed"
                   : "Results will appear here after submission"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="min-h-[80px] flex items-center">
-                {result ? (
-                  <div className="space-y-3">
-                    <p className="text-blue-900 text-lg leading-relaxed font-medium">
-                      {result}
-                    </p>
-                    <div className="flex items-center gap-2 text-sm text-blue-700">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-sm"></div>
-                      <span>Processed by lawgic AI</span>
-                    </div>
+                {loading ? (
+                  <div className="flex items-center gap-3 text-blue-400">
+                    <div className="w-8 h-8 border-2 border-blue-300/40 border-t-blue-500/60 rounded-full animate-spin opacity-50"></div>
+                    <p className="italic">Processing...</p>
+                  </div>
+                ) : result && typeof result === "object" ? (
+                  <div className="space-y-6 w-full">
+                    {Object.entries(result).map(([key, value]) => (
+                      <div key={key} className="mb-4">
+                        <div className="font-semibold text-blue-900">{key}</div>
+                        <div className="text-blue-800 mt-1">{value}</div>
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 text-blue-400">

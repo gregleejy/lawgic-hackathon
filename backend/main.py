@@ -5,6 +5,10 @@ from datetime import datetime
 from typing import List
 import google.generativeai as genai
 from dotenv import load_dotenv
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 # Import our modules
 from term import extract_terms_from_query
@@ -121,10 +125,13 @@ def analyze_legal_scenario(user_query: str, legal_context: str) -> str:
         model = setup_gemini_model()
         prompt = create_legal_analysis_prompt(user_query, legal_context)
         
+        print("Sending prompt to Gemini API...")
         response = model.generate_content(prompt)
+        print("Gemini API response:", response.text)
         return response.text
         
     except Exception as e:
+        print("Error in Gemini API call:", str(e))
         return f"Error generating legal analysis: {str(e)}"
 
 def save_to_output_json(analysis_json: str, output_file: str = "output.json"):
@@ -184,10 +191,10 @@ def process_query(user_query: str, save_output: bool = True) -> dict:
         
         legal_context = process_context(
             key_terms=key_terms,
-            pdpa_path="../data/pdpa.json",
-            interpretation_path="../data/interpretation.json", 
-            schedule_path="../data/schedule.json",
-            subsidiary_path="../data/subsidiary.json"
+            pdpa_path=get_data_path("pdpa.json"),
+            interpretation_path=get_data_path("interpretation.json"), 
+            schedule_path=get_data_path("schedule.json"),
+            subsidiary_path=get_data_path("subsidiary.json")
         )
         
         if "No relevant categories found" in legal_context:
@@ -237,6 +244,34 @@ def process_query(user_query: str, save_output: bool = True) -> dict:
         if save_output:
             save_to_output_json(f'{{"error": "{str(e)}"}}')
         raise e
+
+# FastAPI app setup
+app = FastAPI()
+
+# Allow frontend dev server to access backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust for production!
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount static files from backend directory at /static
+app.mount("/static", StaticFiles(directory=os.path.dirname(__file__)), name="static")
+
+@app.post("/query")
+async def query_endpoint(request: Request):
+    data = await request.json()
+    user_query = data.get("query", "")
+    if not user_query:
+        return JSONResponse({"error": "Missing query"}, status_code=400)
+    try:
+        # Change save_output to True so output.json is updated
+        result = process_query(user_query, save_output=True)
+        return JSONResponse({"result": result})
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
 
 def main():
     """Main function to process legal queries"""
@@ -329,6 +364,9 @@ def test_with_sample_query():
         print(f"❌ Error in test: {str(e)}")
         import traceback
         traceback.print_exc()
+
+def get_data_path(filename):
+    return os.path.join(os.path.dirname(__file__), "data", filename)
 
 if __name__ == "__main__":
     # Run the test with sample query first
