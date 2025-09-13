@@ -1,0 +1,193 @@
+{
+  "subsidiary_legislation_mapping": {
+    "Personal Data Protection Regulations 2021 (S 63/2021)": {
+      "4": {
+        "subsection": "(8)",
+        "regulation": "Regulation 1A",
+        "description": "Business contact information of designated individuals"
+      },
+      "21": {
+        "regulation": "Regulations 2-8",
+        "description": "Access requests procedures and requirements"
+      },
+      "22": {
+        "regulation": "Regulations 2-8",
+        "description": "Correction requests procedures and requirements"
+      },
+      "26": {
+        "regulation": "Regulations 9-12",
+        "description": "Transfer of personal data outside Singapore",
+        "subsections": {
+          "(1)": "Regulation 10 - Specific requirements for overseas transfers",
+          "(2)": "Regulations 11-12 - Legally enforceable obligations and specified certifications"
+        }
+      },
+      "15a": {
+        "regulation": "Regulations 13-15",
+        "description": "Deemed consent by notification and legitimate interests",
+        "subsections": {
+          "(3)": "Regulation 13 - Excluded purposes under deemed consent"
+        }
+      },
+      "48d": {
+        "subsection": "(1)",
+        "regulation": "Regulation 15A",
+        "description": "Defence to offences under section 48D(1)"
+      },
+      "48e": {
+        "subsection": "(1)",
+        "regulation": "Regulation 15B",
+        "description": "Defence to offences under section 48E(1)"
+      },
+      "65": {
+        "regulation": "Regulation 17",
+        "description": "Symbol of Commission"
+      },
+      "first_schedule_part_3": {
+        "regulation": "Regulation 15",
+        "description": "Assessment of effect for legitimate interests"
+      },
+      "deceased_individual_provisions": {
+        "regulation": "Regulation 16",
+        "description": "Exercise of rights in respect of deceased individuals"
+      }
+    },
+    "Personal Data Protection (Enforcement) Regulations 2021 (S 62/2021)": {
+      "48h": {
+        "regulation": "Regulations 3-10",
+        "description": "Review applications procedures",
+        "subsections": {
+          "(2)": "Regulation 17 - Notice of direction or decision requirements"
+        }
+      },
+      "48n": {
+        "regulation": "Regulations 11-15",
+        "description": "Reconsideration applications procedures",
+        "subsections": {
+          "(6)(b)": "Regulation 19 - Notice of reconsideration decision"
+        }
+      },
+      "48g": {
+        "subsection": "(2)",
+        "regulation": "Regulation 16",
+        "description": "Notice of direction requirements"
+      },
+      "48i": {
+        "regulation": "Regulation 18",
+        "description": "Notice of direction under section 48I"
+      },
+      "48j": {
+        "regulation": "Regulation 10A",
+        "description": "Maximum amount of financial penalties",
+        "subsections": {
+          "(1)": "Regulation 18 - Notice of financial penalty imposition"
+        }
+      },
+      "48l": {
+        "subsection": "(4)",
+        "regulation": "Regulation 16",
+        "description": "Notice of direction requirements"
+      },
+      "50": {
+        "regulation": "Regulations 20-21",
+        "description": "Investigation powers and document production"
+      },
+      "52": {
+        "subsection": "(7)",
+        "regulation": "Regulation 2",
+        "description": "Definition of officer"
+      },
+      "65": {
+        "regulation": "All regulations",
+        "description": "General regulation-making power"
+      }
+    },
+    "Personal Data Protection (Notification of Data Breaches) Regulations 2021 (S 64/2021)": {
+      "26d": {
+        "regulation": "Regulations 1-6",
+        "description": "Data breach notification framework",
+        "subsections": {
+          "(1)": "Regulations 3-4 - Circumstances requiring notification",
+          "(2)": "Regulation 5 - Notification to Commission requirements",
+          "(3)": "Regulation 6 - Notification to affected individuals requirements"
+        }
+      },
+      "65": {
+        "regulation": "All regulations",
+        "description": "Enabling power for breach notification regulations"
+      }
+    },
+    "Personal Data Protection (Do Not Call Registry) Regulations 2013 (S 709/2013)": {
+      "43": {
+        "regulation": "Regulations 1-14",
+        "description": "Do Not Call Registry operations and requirements",
+        "subsections": {
+          "(2)(a)": "Regulation 15 - Prescribed duration (21 days)",
+          "(2)(b)": "Regulation 16 - Prescribed period (21 days)",
+          "(3)": "Regulation 16 - Related period provisions"
+        }
+      },
+      "43a": {
+        "subsection": "(2)(b)",
+        "regulation": "Regulation 17A",
+        "description": "Requirements for checkers"
+      },
+      "47": {
+        "subsection": "(3)",
+        "regulation": "Regulation 17",
+        "description": "Prescribed period after withdrawal notice"
+      },
+      "65": {
+        "regulation": "All regulations",
+        "description": "Enabling power for DNC Registry regulations"
+      }
+    },
+    "Personal Data Protection (Composition of Offences) Regulations 2021 (S 70/2021)": {
+      "55": {
+        "regulation": "Regulations 2-3",
+        "description": "Compoundable offences",
+        "subsections": {
+          "(1)": "Regulation 2 - Commission compounding power",
+          "(2)": "Regulation 3 - Specific compoundable offences",
+          "(4)": "All regulations - Enabling power"
+        }
+      },
+      "51": {
+        "subsection": "(1)",
+        "regulation": "Regulation 2",
+        "description": "Compoundable offence reference"
+      },
+      "61": {
+        "subsection": "(2)",
+        "regulation": "Regulation 2",
+        "description": "Compoundable offence reference"
+      },
+      "42": {
+        "subsection": "(2)",
+        "regulation": "Regulation 3",
+        "description": "Compoundable offence reference"
+      }
+    },
+    "Personal Data Protection (Appeal) Regulations 2021 (S 65/2021)": {
+      "seventh_schedule": {
+        "regulation": "Regulations 1-17",
+        "description": "Appeal Committee constitution and proceedings"
+      },
+      "65": {
+        "regulation": "All regulations",
+        "description": "Enabling power for appeal regulations"
+      }
+    },
+    "Personal Data Protection (Statutory Bodies Notification) Regulations 2013 (S 149/2013)": {
+      "4": {
+        "subsection": "(9)",
+        "regulation": "Schedule",
+        "description": "Statutory bodies notification requirements"
+      },
+      "65": {
+        "regulation": "All regulations",
+        "description": "Enabling power for statutory body regulations"
+      }
+    }
+  }
+}

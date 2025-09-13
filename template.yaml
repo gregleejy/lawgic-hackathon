@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lawgic Legal Analysis API - Singapore PDPA System
+
+Parameters:
+  GeminiApiKey:
+    Type: String
+    Description: Google Gemini API Key for legal analysis
+    NoEcho: true
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 1024
+    Runtime: python3.9
+    Environment:
+      Variables:
+        GEMINI_API_KEY: !Ref GeminiApiKey
+
+Resources:
+  # API Gateway
+  LawgicApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization'"
+        AllowOrigin: "'*'"
+      BinaryMediaTypes:
+        - '*/*'
+
+  # Lambda Function for Legal Analysis
+  LegalAnalysisFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: lambda_handler.lambda_handler
+      Description: Processes legal scenarios and provides PDPA analysis
+      Events:
+        AnalyzeQuery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LawgicApi
+            Path: /analyze
+            Method: post
+        OptionsQuery:
+          Type: Api
+          Properties:
+            RestApiId: !Ref LawgicApi
+            Path: /analyze
+            Method: options
+
+Outputs:
+  LawgicApiUrl:
+    Description: "API Gateway endpoint URL for Lawgic"
+    Value: !Sub "https://${LawgicApi}.execute-api.${AWS::Region}.amazonaws.com/prod"
+    Export:
+      Name: LawgicApiUrl
+  
+  LawgicApiId:
+    Description: "API Gateway ID"
+    Value: !Ref LawgicApi
+    Export:
+      Name: LawgicApiId
