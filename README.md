@@ -39,17 +39,7 @@ lawgic-hackathon/
 
 ## Quick Start
 
-### 1. Run the Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-- Access the app at [http://localhost:3000](http://localhost:3000)
-
-### 2. Run the Backend
+### 1. Run the Backend
 
 ```bash
 cd backend
@@ -63,6 +53,18 @@ uvicorn main:app --reload
 ```
 
 - Backend API available at [http://localhost:8000](http://localhost:8000)
+
+### 2. Run the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+- Access the app at [http://localhost:3000](http://localhost:3000)
+
+
 
 ---
 
