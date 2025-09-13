@@ -167,4 +167,9 @@ npm run dev
 - **Polling for Results:** Polls `/static/output.json` until the analysis result is updated.
 - **Result Presentation:** Formats the JSON output for readability, displaying each provision and its reasoning in a clear, presentable way.
 
+### IMPORTANT - Model Resilience & Fallback Strategy
+
+To ensure LAWGIC remains reliable even under quota pressure, we implemented a dynamic model switching mechanism. By default, the system uses gemini-2.5-pro for its superior reasoning capabilities. However, if a quota limit or token constraint (e.g. HTTP 429) is encountered — typically due to large context windows or high traffic — the system gracefully falls back to lighter models such as gemini-1.5-pro or gemini-2.0-flash.
+
+This fallback is only activated when the API key belongs to the system creator, allowing full control over quota-sensitive behavior during development or deployment. By adapting in real time, LAWGIC maintains stable legal analysis output without compromising availability — ensuring the user receives a response even when resource limits are hit.
 ---
