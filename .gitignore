@@ -1,21 +1,58 @@
-# ---------------------------
+# AWS SAM build artifacts
+.aws-sam/
+samconfig.toml
+
 # Python
-# ---------------------------
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
+*$py.class
 *.so
-*.egg-info/
-.eggs/
-*.log
-
-#Virtual enviornments
-.env
-.venv
+.Python
+env/
 venv/
 ENV/
-env/
+backend/output.json
 
+# Environment variables (NEVER commit API keys!)
+.env
+.env.local
+.env.*.local
+backend/.env
 
+# Node.js / Next.js
+node_modules/
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.env.local
+frontend/.env.*.local
 
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# AWS credentials (NEVER commit these!)
+.aws/
+credentials.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
