@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-dotenv
+google-generativeai
+sentence-transformers
+numpy
+transformers
+# Optional: For torch-based models (required by sentence-transformers)
+torch
