@@ -1,0 +1,19 @@
+# ---------------------------
+# Python
+# ---------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+*.log
+
+#Virtual enviornments
+.env
+.venv
+venv/
+ENV/
+env/
+
